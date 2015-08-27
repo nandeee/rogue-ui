@@ -1,0 +1,19 @@
+<div ng-if="tabCheck(value.nodes)" class="inputContainer" layout="row" layout-wrap>
+  <div ng-repeat="(key, value) in value.nodes">
+    <div class="inputDiv" ng-if="value.leafNode" ng-include="'input-template.html'" scope="" onload=""></div>
+  </div>
+</div>
+<md-tabs md-dynamic-height ng-if="!tabCheck(value.nodes) && value.name !== 'customizedJson'">
+  <md-tab label="Tab #1" ng-if="!tabCheck(value.nodes, 'noLeaves')">
+    <div class="inputContainer" layout="row" layout-wrap>
+      <div ng-repeat="(key, value) in value.nodes">
+        <div class="inputDiv" ng-if="value.leafNode" ng-include="'input-template.html'" scope="" onload=""></div>
+      </div>
+    </div>
+  </md-tab>
+  <md-tab label="{{value.name}}" ng-if="!value.leafNode" ng-repeat="(key, value) in value.nodes">
+    <div ng-include="'tab-template.html'" scope="" onload=""></div>
+    </div>
+  </md-tab>
+</md-tabs>
+<div ng-include="'cj-template.html'" scope="" onload="" ng-if="value.name === 'customizedJson'"></div>

@@ -1,0 +1,46 @@
+<div>
+  <span data-name="fabric" ng-click="toggleMenu($event)" layout ng-click="entity.fabric = !entity.fabric"><a layout flex ui-sref="fabric">Fabric<span flex></span>
+  <md-icon md-svg-src="md-toggle-arrow" class="ng-isolate-scope md-default-theme" ng-class="{closed: entity.fabric}" aria-hidden="true">
+    <svg version="1.1" x="0px" y="0px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fit="" height="100%" width="100%" preserveAspectRatio="xMidYMid meet" style="pointer-events: none; display: block;">
+      <path d="M24 16l-12 12 2.83 2.83 9.17-9.17 9.17 9.17 2.83-2.83z"></path>
+      <path d="M0 0h48v48h-48z" fill="none"></path>
+    </svg>
+    </a>
+    </span>
+    <ul ng-show="entity.fabric">
+      <li><a ui-sref="fabric.create">Create</a></li>
+      <li><a ui-sref="fabric.read">Read</a></li>
+      <!-- <li>Read</li> -->
+      <li>Update</li>
+      <li>Delete</li>
+    </ul>
+</div>
+<span data-name="product" ng-click="toggleMenu($event)" layout ng-click="entity.product = !entity.product"><a layout flex ui-sref="product">Product<span flex></span>
+<md-icon md-svg-src="md-toggle-arrow" class="ng-isolate-scope md-default-theme" ng-class="{closed: entity.product}" aria-hidden="true">
+  <svg version="1.1" x="0px" y="0px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fit="" height="100%" width="100%" preserveAspectRatio="xMidYMid meet" style="pointer-events: none; display: block;">
+    <path d="M24 16l-12 12 2.83 2.83 9.17-9.17 9.17 9.17 2.83-2.83z"></path>
+    <path d="M0 0h48v48h-48z" fill="none"></path>
+  </svg>
+  </a>
+  </span>
+  <ul ng-show="entity.product">
+    <li><a ui-sref="product.create">Create</a></li>
+    <li><a ui-sref="product.read">Read</a></li>
+    <li><a ui-sref="product.update">Update</a></li>
+    <li>Delete</li>
+  </ul>
+  <span data-name="trim" ng-click="toggleMenu($event)" layout ng-click="entity.trim = !entity.trim"><a layout flex ui-sref="trim">Trim<span flex></span>
+  <md-icon md-svg-src="md-toggle-arrow" class="ng-isolate-scope md-default-theme" ng-class="{closed: entity.trim}" aria-hidden="true">
+    <svg version="1.1" x="0px" y="0px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fit="" height="100%" width="100%" preserveAspectRatio="xMidYMid meet" style="pointer-events: none; display: block;">
+      <path d="M24 16l-12 12 2.83 2.83 9.17-9.17 9.17 9.17 2.83-2.83z"></path>
+      <path d="M0 0h48v48h-48z" fill="none"></path>
+    </svg>
+    </a>
+    </span>
+    <ul ng-show="entity.trim">
+      <li><a ui-sref="trim.create">Create</a></li>
+      <li><a ui-sref="trim.read">Read</a></li>
+      <li><a ui-sref="trim.update">Update</a></li>
+      <!-- <li>Read</li> -->
+      <li>Delete</li>
+    </ul>

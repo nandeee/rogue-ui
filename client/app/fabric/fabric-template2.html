@@ -1,0 +1,8 @@
+<!-- {{value.type}} -->
+<md-input-container ng-hide="value.type === 'checkbox'">
+  <label>{{value.name}}</label>
+  <input type="{{value.type}}" name="{{value.name}}" ng-show="value.leafNode">
+</md-input-container>
+<div flex class="inputDiv" ng-repeat="value in value.nodes track by $index">
+<div ng-include="'app/fabric/fabric-template2.html'"></div>
+</div>

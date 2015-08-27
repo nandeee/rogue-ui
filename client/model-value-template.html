@@ -1,0 +1,4 @@
+<span ng-if="value.leafNode">{{value.name}} : {{value.model}}</span>
+
+<div ng-repeat="(key, value) in value.nodes" ng-include="'model-value-template.html'" scope="" onload="">
+</div>

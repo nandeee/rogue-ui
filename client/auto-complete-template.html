@@ -1,0 +1,6 @@
+<!-- {{key}} -->
+<md-autocomplete class="newProp" md-selected-item="ctrl[key].selectedItem" md-search-text="ctrl[key].searchText" md-items="item in ctrl.querySearch(ctrl[key].searchText, key)" md-min-length="0" placeholder="Add new {{key}}">
+  <md-item-template>
+    <span md-highlight-text="ctrl[key].searchText" md-highlight-flags="^i">{{item}}</span>
+  </md-item-template>
+</md-autocomplete>

@@ -1,0 +1,25 @@
+<!-- <md-tabs md-dynamic-height md-stretch-tabs="always"> -->
+<md-tabs md-dynamic-height>
+  <md-tab label="Tab #1">
+    <div id="testParent" layout="row" layout-wrap>
+      <div ng-repeat="(key, value) in productJSON">
+        <div ng-if="value.leafNode" ng-include="'input-template.html'" ng-class="!value.leafNode ? 'inputContainer' :'inputDiv'">
+        </div>
+        <div ng-if="!value.leafNode" layout="row" layout-wrap ng-include="'input-template.html'" ng-class="!value.leafNode ? 'inputContainer' : 'inputDiv'">
+        </div>
+      </div>
+      <!-- <div class="hello">hello</div> -->
+    </div>
+  </md-tab>
+  <md-tab label="Tab #2">
+    <span>{{generateEntity(productJSON)}}</span>
+  </md-tab>
+  <md-tab label="Tab #3"></md-tab>
+</md-tabs>
+
+<!-- <div class="col-md-12">
+This is the product-create view.
+</div>
+ -->
+ <!-- class="inputDiv" -->
+<!-- <div class="hello" ng-class="className">hello</div> -->

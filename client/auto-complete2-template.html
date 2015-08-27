@@ -1,0 +1,7 @@
+<!-- {{key}} -->
+<!-- {{ctrl['component'].itemDetails[key].subComponents}} -->
+<md-autocomplete class="newProp" md-selected-item-change="ctrl.selectedItemChange(item, key)" md-selected-item="ctrl['component'].itemDetails[key].selectedItem" md-search-text="ctrl['component'].itemDetails[key].searchText" md-items="item in ctrl.querySearch(ctrl['component'].itemDetails[key].searchText, key, true)" md-min-length="0" placeholder="Add {{key}}">
+  <md-item-template>
+    <span md-highlight-text="ctrl['component'].itemDetails[key].searchText" md-highlight-flags="^i">{{item}}</span>
+  </md-item-template>
+</md-autocomplete>
