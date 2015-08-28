@@ -1,11 +1,5 @@
-<!-- {{value.model}} -->
-<md-input-container ng-hide="value.type === 'checkbox'" ng-if="value.leafNode && !value.dropdown">
+<span>{{value.model}}</span>
+<md-input-container>
   <label>{{value.name}}</label>
-  <input to-array type="{{value.type}}" name="{{value.name}}" ng-model="value.model">
-</md-input-container>
-<md-input-container ng-if="value.dropdown">
-  <label>{{value.name}}</label>
-  <md-select ng-model="ctrl.userState">
-    <md-option ng-repeat="state in categoryData.collections" value="{{state}}">{{state}}</md-option>
-  </md-select>
+  <input type="{{value.type}}" name="{{value.name}}" ng-model="value.model">
 </md-input-container>

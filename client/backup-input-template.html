@@ -1,23 +1,19 @@
-<div class="inputContainer" ng-if="!value.leafNode">{{value.name}}</div>
+<div ng-if="!value.leafNode">{{value.name}}</div>
 <!-- <md-input-container ng-hide="value.type === 'checkbox'" ng-if="value.leafNode">
 </md-input-container> -->
 <!-- <label ng-hide="value.type === 'checkbox'" ng-if="value.leafNode">{{value.name}}</label>
 <input ng-hide="value.type === 'checkbox'" ng-if="value.leafNode" type="{{value.type}}" name="{{value.name}}" ng-model="value.model"> -->
-
- <!-- type="{{value.type}}" -->
+<!-- type="{{value.type}}" -->
 <md-input-container ng-hide="value.type === 'checkbox'" ng-if="value.leafNode">
   <label>{{value.name}}</label>
   <input type="{{value.type}}" name="{{value.name}}" ng-model="value.model">
 </md-input-container>
-
-    <!-- <div class="control-group" ng-repeat="field in customFields">
+<!-- <div class="control-group" ng-repeat="field in customFields">
         <label class="control-label">{{field.one}}</label>
         <div class="controls">
             <input type="text" ng-model="person.customfields[field.two]" />
         </div>
     </div> -->
-
-
 <div ng-repeat="(key, value) in value.nodes">
   <div ng-if="value.leafNode" ng-include="'input-template.html'" ng-class="!value.leafNode ? 'inputContainer' : 'inputDiv'">
   </div>
