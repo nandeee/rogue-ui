@@ -1,0 +1,17 @@
+<div ng-repeat="(key, value) in entity">
+  <span data-name="{{key}}" ng-click="toggleMenu($event)" layout ng-click="entity[key] = !entity[key]"><a layout flex ui-sref="{{key}}">{{key}}<span flex></span>
+  <md-icon md-svg-src="md-toggle-arrow" class="ng-isolate-scope md-default-theme" ng-class="{closed: entity[key]}" aria-hidden="true">
+    <svg version="1.1" x="0px" y="0px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fit="" height="100%" width="100%" preserveAspectRatio="xMidYMid meet" style="pointer-events: none; display: block;">
+      <path d="M24 16l-12 12 2.83 2.83 9.17-9.17 9.17 9.17 2.83-2.83z"></path>
+      <path d="M0 0h48v48h-48z" fill="none"></path>
+    </svg>
+    </a>
+    </span>
+    <ul ng-show="entity[key]">
+      <li><a ui-sref="{{key}}.create">Create</a></li>
+      <li><a ui-sref="{{key}}.read">Read</a></li>
+      <li><a ui-sref="{{key}}.update">Update</a></li>
+      <li><a ui-sref="{{key}}.delete">Delete</a></li>
+      <!-- <li>Read</li> -->
+    </ul>
+</div>

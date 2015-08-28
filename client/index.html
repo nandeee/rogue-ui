@@ -28,9 +28,12 @@
   <link rel="stylesheet" href="app/app.css">
   <!-- injector:css -->
   <link rel="stylesheet" href="app/app.css">
+  <link rel="stylesheet" href="app/component/component.css">
   <link rel="stylesheet" href="app/fabric/fabric.css">
   <link rel="stylesheet" href="app/main/main.css">
   <link rel="stylesheet" href="app/product/product.css">
+  <link rel="stylesheet" href="app/rule/rule.css">
+  <link rel="stylesheet" href="app/style/style.css">
   <link rel="stylesheet" href="app/trim/trim.css">
   <link rel="stylesheet" href="components/modal/modal.css">
   <!-- endinjector -->
@@ -42,25 +45,11 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
   <!-- Add your site or application content here -->
-  <div id="sidenav">
+  <div id="sidenav" class="unselectable">
     <div class="logo"><img src="http://41.media.tumblr.com/tumblr_lwyaasUChY1qzkrfxo4_1280.jpg"></div>
     <div class="menu-items">
-      <div ng-repeat="(key, value) in entity">
-        <span data-name="{{key}}" ng-click="toggleMenu($event)" layout ng-click="entity[key] = !entity[key]"><a layout flex ui-sref="{{key}}">{{key}}<span flex></span>
-        <md-icon md-svg-src="md-toggle-arrow" class="ng-isolate-scope md-default-theme" ng-class="{closed: entity[key]}" aria-hidden="true">
-          <svg version="1.1" x="0px" y="0px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fit="" height="100%" width="100%" preserveAspectRatio="xMidYMid meet" style="pointer-events: none; display: block;">
-            <path d="M24 16l-12 12 2.83 2.83 9.17-9.17 9.17 9.17 2.83-2.83z"></path>
-            <path d="M0 0h48v48h-48z" fill="none"></path>
-          </svg>
-          </a>
-          </span>
-          <ul ng-show="entity[key]">
-            <li><a ui-sref="{{key}}.create">Create</a></li>
-            <li><a ui-sref="{{key}}.read">Read</a></li>
-            <li><a ui-sref="{{key}}.update">Update</a></li>
-            <li><a ui-sref="{{key}}.delete">Delete</a></li>
-            <!-- <li>Read</li> -->
-          </ul>
+      <div ng-repeat="(key, value) in entity" layout="column">
+        <span ui-sref="{{key}}.create" ng-class="{'menu-selected': isSelected(key)}">{{key}}</span>
       </div>
     </div>
   </div>
@@ -68,6 +57,10 @@
     <div id="header" layout="row">
       <div class="title" layout="row" layout-align="center center"><span>Rogue</span></div>
       <div class="stateSpan" layout="row" layout-align="center center"><span ng-bind="state.current.name"></span></div>
+      <div ng-show="false" layout="row" layout-align="center center" md-theme="red">
+        <md-switch class="md-primary" md-no-ink aria-label="Switch No Ink" ng-model="isUpdate">
+        </md-switch>
+      </div>
       <div layout="row" layout-align="center center">
         <md-button ng-if="showButton()" class="md-raised">{{state.current.name.split('.')[1]}}</md-button>
       </div>
@@ -128,6 +121,9 @@
   <script src="app/config.js"></script>
   <!-- injector:js -->
   <script src="app/backup-config.js"></script>
+  <script src="app/component/component.controller.js"></script>
+  <script src="app/component/component.js"></script>
+  <script src="app/component/component.service.js"></script>
   <script src="app/config.js"></script>
   <script src="app/fabric/fabric.controller.js"></script>
   <script src="app/fabric/fabric.js"></script>
@@ -135,6 +131,8 @@
   <script src="app/main/main.js"></script>
   <script src="app/product/product.controller.js"></script>
   <script src="app/product/product.js"></script>
+  <script src="app/rule/rule.controller.js"></script>
+  <script src="app/rule/rule.js"></script>
   <script src="app/services/addtobag.service.js"></script>
   <script src="app/services/components.service.js"></script>
   <script src="app/services/customise.service.js"></script>
@@ -144,6 +142,8 @@
   <script src="app/services/rules.service.js"></script>
   <script src="app/services/styles.service.js"></script>
   <script src="app/services/trims.service.js"></script>
+  <script src="app/style/style.controller.js"></script>
+  <script src="app/style/style.js"></script>
   <script src="app/trim/trim.controller.js"></script>
   <script src="app/trim/trim.js"></script>
   <script src="app/trim/trim.service.js"></script>

@@ -1,8 +1,39 @@
+.dropdown-multi-input {
+  width: 200px;
+  margin: 10px 0;
+}
+
+md-toast.md-custom-toast-theme {
+  font-family: 'Maven Pro', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.multi-input {
+  margin: 0 20px;
+}
+
+.multi-input-container {
+  border: #C5CAE9 1px solid;
+}
+
+.add-map-entity {
+  padding: 0 10px;
+  background-color: #E8EAF6;
+  border: #C5CAE9 1px solid;
+}
+
+
 /* Experimental - <remove> */
 
 .ui-grid-cell {
   overflow: auto;
   text-overflow: auto;
+}
+
+.menu-selected {
+  border: solid 2px #3F51B5;
+  background-color: #424242;
 }
 
 .tempPapa {
@@ -59,10 +90,9 @@ body {
 
 /* Enable below style rules to disable tab switching animation */
 
-
-/*[role="tabpanel"] {
-    transition: none;
-}*/
+[role="tabpanel"] {
+  transition: none;
+}
 
 md-tabs {
   height: 100%;
@@ -138,8 +168,8 @@ md-tabs-canvas {
   font-size: 20px;
   color: white;
   left: 0;
-  width: 220px;
-  background-color: #009688;
+  width: 180px;
+  background-color: #212121;
   overflow-y: auto;
 }
 
@@ -189,13 +219,29 @@ md-icon.closed {
 #sidenav span,
 #sidenav li {
   cursor: pointer;
-  padding: 5px 0 5px 5px;
+  padding: 5px;
+  /*padding: 5px 0 5px 5px;*/
   border-radius: 5px;
 }
 
 #sidenav span:hover,
 #sidenav li:hover {
-  background-color: #00897B;
+  background-color: #424242;
+}
+
+md-tabs-wrapper {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+
+/* Makes element unselectable */
+
+.unselectable {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .inputDiv {

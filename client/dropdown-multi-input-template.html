@@ -1,0 +1,6 @@
+<div class="multi-input">
+  <md-autocomplete class="dropdown-multi-input" md-selected-item-change="addMultiInputValue(value, item)" md-selected-item="selectedItem" md-search-text="searchText" md-items="item in querySearch(searchText, 'trimColor')" md-item-text="item" md-min-length="0" placeholder="{{key}}">
+    <span md-highlight-text="searchText">{{item}}</span>
+  </md-autocomplete>
+  <md-chips ng-if="value.model.length" ng-model="value.model" track by $index></md-chips>
+</div>

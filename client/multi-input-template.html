@@ -1,0 +1,13 @@
+<div class="multi-input">
+  <form ng-submit="addMultiInputValue(value, multiInputValue);multiInputValue=undefined;">
+    <md-input-container>
+      <label>Add new {{value.name}} value</label>
+      <input type="text" ng-model="multiInputValue">
+    </md-input-container>
+  </form>
+  <!-- <div ng-repeat="(key, value) in value.model" layout>
+  <span>{{value}}</span>
+</div>
+ -->
+  <md-chips ng-if="value.model.length" ng-model="value.model" track by $index></md-chips>
+</div>

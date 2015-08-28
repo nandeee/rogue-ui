@@ -14,9 +14,15 @@ angular.module('expsApp', [
   ])
   .config(function($stateProvider, $urlRouterProvider, $locationProvider, $mdThemingProvider) {
     $mdThemingProvider.theme('core')
+      .primaryPalette('pink')
       .accentPalette('indigo', {
         'default': '500'
       });
+
+    $mdThemingProvider.theme('custom-toast');
+
+    $mdThemingProvider.theme('red')
+      .primaryPalette('red');
 
     $urlRouterProvider
       .otherwise('/fabric');
