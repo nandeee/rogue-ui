@@ -6,7 +6,8 @@
 </div>
 <div ng-if="tabCheck(value.nodes)">
   <div ng-repeat="(key, value) in value.nodes" ng-if="key !== 'placeholder' && value.array">
-    <div ng-if="!value.dropdown" class="multi-input-container" ng-include="'multi-input-template.html'" scope="" onload=""></div>
+    <div ng-if="!value.dropdown && value.customType" class="multi-input-container" ng-include="'custom-multi-input-template.html'" scope="" onload=""></div>
+    <div ng-if="!value.dropdown && !value.customType" class="multi-input-container" ng-include="'multi-input-template.html'" scope="" onload=""></div>
     <div ng-if="value.dropdown" class="multi-input-container" ng-include="'dropdown-multi-input-template.html'" scope="" onload=""></div>
   </div>
 </div>

@@ -13,7 +13,7 @@
     "font-awesome": ">=4.1.0",
     "lodash": "~2.4.1",
     "angular-ui-router": "~0.2.15",
-    "angular-material": "master",
+    "angular-material": "~0.10.1",
     "angular-ui-grid": "~3.0.1",
     "angular-messages": "~1.4.3"
   },

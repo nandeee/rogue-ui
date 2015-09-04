@@ -35,7 +35,7 @@ exports.post = function(req, res) {
   var options = config.pcm.options;
   options.headers = {};
   options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-  options.path = options.path + req.url;
+  options.path = '/rogue/api/v1/en/in' + req.url;
   options.method = "POST";
   var data = {
     data: JSON.stringify(req.body)

@@ -1,4 +1,4 @@
 'use strict';
 
 angular.module('expsApp')
-  .controller('TrimCtrl', function($scope, $http, TrimService, $state) {});
+  .controller('TrimCtrl', function($scope) {});

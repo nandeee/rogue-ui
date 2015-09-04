@@ -1,12 +1,58 @@
 'use strict';
 
 angular.module('expsApp')
-  .controller('MainCtrl', function($scope, $state, $mdToast) {
+  .controller('MainCtrl', function($scope, $state, $mdToast, TrimService, $http) {
     $scope.state = $state;
     $scope.entity = {};
     $scope.jsonView = true;
 
-    $scope.trimJSON = config.trimFormSchema;
+    $scope.trimJSON = angular.copy(config.trimFormSchema);
+    $scope.componentJSON = config.componentFormSchema;
+    $scope.Embroidery = config.Embroidery;
+
+    $scope.makeReq = function makeReq () {
+      var tempObj = $scope.formToEntity($scope.trimJSON);
+      var tempArr = [];
+      tempArr.push(tempObj.trim);
+      TrimService.create(tempArr);
+    }
+
+    $scope.testFunction = function testFunction(asdf) {
+      console.log(asdf);
+      // $http.get(config.backend + 'components/COL001?complete=true').
+      $http.get(config.backend + 'trims/buttons/BTN1?complete=true').
+      then(function(response) {
+        var tempObj = response.data.data;
+        console.log(tempObj);
+        // $scope.componentJSON = angular.copy(config.componentFormSchema);
+        // $scope.generateForm(tempObj, $scope.componentJSON.component.nodes);
+        $scope.trimJSON = angular.copy(config.trimFormSchema);
+        $scope.generateForm(tempObj, $scope.trimJSON.trim.nodes);
+        // this callback will be called asynchronously
+        // when the response is available
+      }, function(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+      });
+    }
+
+    $scope.generateForm = function generateForm(obj, parent) {
+      for (var key in obj) {
+        if (obj[key] instanceof Object && !Array.isArray(obj[key])) {
+          if (parent[key].map) {
+            var keys = Object.keys(obj[key]);
+            for (var i = 0; i < keys.length; i++) {
+              var temp = angular.copy(parent[key].nodes['placeholder']);
+              temp['name'] = keys[i];
+              parent[key].nodes[keys[i]] = temp;
+            };
+          };
+          generateForm(obj[key], parent[key].nodes);
+        } else {
+          parent[key].model = obj[key];
+        }
+      }
+    }
 
     $scope.toastPosition = {
       bottom: false,
@@ -41,7 +87,7 @@ angular.module('expsApp')
       'trimColor': {
         'list': [],
         'returnList': function() {
-          return ['abhishek', 'nandwana', 'daft', 'punk', 'nirvana', 'someRandomBand', 'getSchwifty'];
+          return ['asdf', 'hello', 'testing', '123', 'foo', 'bar'];
         }
       }
     }
@@ -83,11 +129,16 @@ angular.module('expsApp')
       value.nodes[newMapEntityName] = newMapEntity;
     }
 
+    $scope.disallowedKeys = ['placeholder', 'createdBy', 'createdTime', 'lastModifiedTime', 'liveDateOnWeb'];
+
     $scope.generateEntity = function generateEntity(obj, parent) {
       for (var key in obj) {
-        if (key === 'placeholder') {
+        if ($scope.disallowedKeys.indexOf(key) !== -1) {
           continue;
         };
+        // if (key === 'placeholder') {
+        //   continue;
+        // };
         if (obj[key].leafNode) {
           parent[key] = obj[key].model;
         } else {
@@ -97,10 +148,19 @@ angular.module('expsApp')
       }
     }
 
+    $scope.entityToForm = function entityToForm(tempObj) {
+
+    }
+
     $scope.formToEntity = function formToEntity(obj) {
       var entity = {};
       $scope.generateEntity(obj, entity);
       return entity;
+    }
+
+    $scope.addCustomObj = function addCustomObj(value) {
+      var temp = $scope.formToEntity(value.template)[value.type];
+      value.model.push(temp);
     }
 
     $scope.tabCheck = function tabCheck(obj, checkType) {
