@@ -1,12 +1,11 @@
-<div layout class="add-map-entity" layout-align="start center">
-  <form ng-submit="addNewMapEntity(newMapEntityName, value);newMapEntityName=undefined;">
-    <md-input-container>
-      <label>Add new {{value.name}} entity</label>
-      <input type="text" ng-model="newMapEntityName">
-    </md-input-container>
-  </form>
-  <!-- <md-button class="md-fab" md-theme="core" aria-label="placeholder" ng-click="addNewMapEntity(newMapEntityName, value)">
-  <md-icon md-svg-src="assets/images/ic_add_box_white_24px.svg"></md-icon>
-</md-button>
- -->
+<div class="add-map-entity" layout layout-align="start center">
+  <md-input-container class="add-map-input">
+    <label>Add new {{value.name}} entity</label>
+    <md-select ng-model="newMapEntityName">
+      <md-option ng-repeat="item in dropdownVals.trimContent.returnList()" value="{{item}}">{{item}}</md-option>
+    </md-select>
+  </md-input-container>
+  <md-button class="md-fab" ng-click="addNewMapEntity(newMapEntityName, value);newMapEntityName=undefined;" aria-label="placeholder" md-theme="core">
+    <md-icon md-svg-src="assets/images/ic_add_box_white_24px.svg"></md-icon>
+  </md-button>
 </div>

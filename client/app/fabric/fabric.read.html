@@ -1,11 +1,7 @@
-<div class="col-md-12">
-This is the fabric-read view.
+<div layout="row" class="gridContainer" flex layout="column">
+  <div flex layout="column">
+    <div flex layout="column">
+      <div flex ui-grid="gridOptions" class="grid" ui-grid-pagination ui-grid-pinning ui-grid-edit ui-grid-cellNav></div>
+    </div>
+  </div>
 </div>
-<ul>
-  <li ng-repeat="item in items">{{ item }}</li>
-</ul>
-<ul>
-  <li ng-repeat="fruit in vm.fruits">{{ fruit }}</li>
-</ul>
-<!-- <div ui-grid="gridOptions" class="grid" ui-grid-edit ui-grid-cellNav></div> -->
-<!-- <div id="grid1" ui-grid="{ data: temp }" class="grid"></div> -->

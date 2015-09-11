@@ -20,13 +20,10 @@ angular.module('expsApp')
         //   return response.data.data;
         // });
       },
-      getById: function(id) {
-        $log.debug('SERVICE:product, FN:get');
-        if (!id) {
-          $log.error('ERROR:empty id passed');
-          return {};
-        }
-        return $http.get(config.backend + 'products/' + id);
+      getById: function(productId) {
+        return $http.get(config.backend + 'products/' + productId + '?complete=true').then(function(response) {
+          return response;
+        });
       }
     };
   });

@@ -1,72 +1,66 @@
 'use strict';
 
 angular.module('expsApp')
-  .controller('FabricCtrl', function($scope, $http) {
-    $scope.fabricJSON = config.fabricFormSchema;
-    $scope.fabric = config.fabric;
-    var fabricVals = {};
-    var tempModel = config.tempFabric;
-    $scope.allFabrics = [];
-
-    // $http.get('/api/fabrics').
-    //   then(function(response) {
-    //     $scope.allFabrics = response.data.data;
-    //     // this callback will be called asynchronously
-    //     // when the response is available
-    //   }, function(response) {
-    //     // called asynchronously if an error occurs
-    //     // or server returns response with an error status.
-    //   });
-
-    $scope.gridOptions = {
-      data: 'allFabrics',
+  .controller('FabricCtrl', function($scope, $http, FabricService) {
+    $scope.model = $scope.model || {
+      allFabrics: []
     };
 
-    $scope.tabCheck = function tabCheck (obj, checkType) {
-      var res = true;
-      for (var key in obj) {
-        if (checkType === 'noLeaves') {
-          if (obj[key].leafNode) {
-            res = false;
-            break;
-          }
-        } else {
-          if (!obj[key].leafNode) {
-            res = false;
-            break;
-          }
-        }
-      }
-      return res;
-    }
+    // FabricService.get().then(function(response) {
+    //   $scope.model.allFabrics = response.data.data;
+    // })
 
-    function modelToEntity (obj, parent) {
-      for (var key in obj) {
-        if (obj[key].leafNode) {
-          parent[key] = obj[key].model;
-        } else {
-          parent[key] = {};
-          modelToEntity(obj[key].nodes, parent[key]);
-        }
-      }
-    }
+    var paginationOptions = {
+      pageNumber: 1,
+      pageSize: 25
+    };
 
-    $scope.otherWay = function otherWay () {
-      entityTomodel($scope.generateEntity($scope.fabricJSON), tempModel);
-    }
+    $scope.gridOptions = {
+      onRegisterApi: function(gridApi) {
+        $scope.gridApi = gridApi;
+        gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
+          paginationOptions.pageNumber = newPage;
+          paginationOptions.pageSize = pageSize;
+          getPage();
+        });
+      },
+      paginationPageSizes: [25, 50, 75],
+      paginationPageSize: 25,
+      useExternalPagination: true,
+      // totalItems: 194,
+      data: 'model.allFabrics',
+      enableFiltering: true,
+      columnDefs: [{
+        name: 'placeholder',
+        displayName: '',
+        width: 50,
+        enableSorting: false,
+        enableCellEdit: false,
+        enableFiltering: false,
+        headerCellTemplate: '<span></span>',
+        cellTemplate: '<div class="tableButton"><button id="editBtn" type="button" class="btn-small" ng-click="grid.appScope.edit(row.entity)">Edit</button></div>'
+      }, {
+        field: 'fabricId'
+      }, {
+        field: 'color'
+      }, {
+        field: 'collection'
+      }, {
+        field: 'category'
+      }]
+    };
 
-    function entityTomodel (obj, parent) {
-      for (var key in obj) {
-        if (obj[key] instanceof Object && !Array.isArray(obj[key])) {
-          entityTomodel(obj[key], parent[key].nodes);
-        } else {
-          parent[key].model = obj[key];
-        }
-      }
-    }
-
-    $scope.generateEntity = function generateEntity (obj) {
-      modelToEntity(obj, fabricVals);
-      return fabricVals;
-    }
+    var getPage = function() {
+      var index = (paginationOptions.pageNumber - 1) * paginationOptions.pageSize;
+      var size = paginationOptions.pageSize;
+      console.log(index);
+      console.log(size);
+      var url = config.backend + 'fabrics/category/mens-suits?index=' + index + '&size=' + size;
+      $http.get(url)
+        .success(function(response) {
+          console.log('oye!');
+          $scope.model.allFabrics = response.data;
+        });
+    };
+    getPage();
   });

@@ -5,266 +5,170 @@ angular.module('expsApp')
     $scope.model = $scope.model || {
       allProducts: []
     };
-    $scope.flkeys = [];
-    $scope.categoryData = {};
-    $scope.productJSON = config.productFormSchema2;
-    $scope.product = config.product;
-    var productVals = {};
-    var tempModel = config.tempProduct;
-    $scope.tempItem = config.tempItem;
-
-    var subView = $scope.state.current.name.split('.')[1];
-    // if (false) {
-    if (!$scope.model.allProducts.length) {
-      ProductService.get($scope.category).then(function(response) {
-        $scope.model.allProducts = response.data.data;
-        // $scope.flkeys.push({
-        //   name: 'something',
-        //   field: prop
-        // });
-        for (var prop in response.data.data[2]) {
-          $scope.gridOptions.columnDefs.push({
-            minWidth: 200,
-            field: prop
-          });
-        }
-        // for (var i = 0; i < $scope.flkeys.length; i++) {
-        //   $scope.gridOptions.columnDefs.push($scope.flkeys[i]);
-        // };
-      })
-    };
-
-    $scope.testMapping = function testMapping() {
-      ProductService.get($scope.category).then(function(response) {
-        $scope.model.allProducts = response.data.data;
-        // $scope.flkeys.push({
-        //   name: 'something',
-        //   field: prop
-        // });
-        // for (var prop in response.data.data[2]) {
-        //   $scope.gridOptions.columnDefs.push({
-        //     minWidth: 200,
-        //     field: prop
-        //   });
-        // }
-        // for (var i = 0; i < $scope.flkeys.length; i++) {
-        //   $scope.gridOptions.columnDefs.push($scope.flkeys[i]);
-        // };
-      })
-    }
-
-    $scope.subComponentsList = [];
-
-    $scope.showAlert = function showAlert() {
-      alert('You have been alerted!');
-    }
-
-    $scope.addNewProp = function addNewProp(prop, key) {
-      if (prop === null || prop === undefined) {
-        return false;
-      };
-      $scope.ctrl[key].searchText = '';
-      $scope.ctrl[key].selectedItem = undefined;
-      var baseObj = {
-        name: null,
-        type: 'text',
-        leafNode: true,
-        model: null,
-        toArray: null,
-        dropdown: null,
-        multiSelect: null,
-        nodes: {}
-      };
-      baseObj['name'] = prop;
-      // baseObj['name'] = prop;
-      // $scope.productJSON.product.nodes.customizedJson.nodes.components.nodes[prop] = baseObj;
-      // $scope.ctrl[key].searchText = '';
-      // $scope.ctrl[key].selectedItem = undefined;
-
-      $http.get(config.backend + 'components/componentType/mens-shirt/' + prop + '?fields=id,subComponents').
-      then(function(response) {
-        $scope.productJSON.product.nodes.customizedJson.nodes.components.nodes[prop] = baseObj;
-        response = response.data.data;
-        console.log(response);
-        $scope.ctrl[key].itemDetails[prop] = {
-          items: response,
-          ids: [],
-          subComponents: {},
-          subComponentKeys: [],
-          subComponentsValues: angular.copy($scope.subComponentsValues)
-        };
-        for (var i = 0; i < response.length; i++) {
-          $scope.ctrl[key].itemDetails[prop].ids.push(response[i].id);
-        };
-      }, function(response) {});
-    }
+    $scope.componentDetails = {};
 
     $scope.subComponentsValues = {
       'stitch_type': {
         'name': 'stitch_type',
         'state': false,
-        'val': null
+        'model': null
       },
       'button': {
         'name': 'button',
         'state': false,
-        'val': null
+        'model': null
       },
       'tape': {
         'name': 'tape',
         'state': false,
-        'val': null
+        'model': null
       },
       'fabric': {
         'name': 'fabric',
         'state': false,
-        'val': null
+        'model': null
       }
     };
 
-    $http.get(config.backend + 'categories/mens-shirt').
-    then(function(response) {
-      console.log(response.data.data.collections);
-      $scope.categoryData.collections = response.data.data.collections;
-      // this callback will be called asynchronously
-      // when the response is available
-    }, function(response) {
-      // called asynchronously if an error occurs
-      // or server returns response with an error status.
-    });
-
-    $scope.subComponentSelect = function subComponentSelect(subComponentSelectedItem, key) {
-      if (subComponentSelectedItem === null || subComponentSelectedItem === undefined) {
-        return false;
-      };
-      $scope.ctrl['component'].itemDetails[key].subComponents[subComponentSelectedItem] = {};
-      $scope.ctrl['component'].itemDetails[key].subComponents[subComponentSelectedItem] = angular.copy($scope.subComponentsValues);
+    $scope.dropdownVals = {
+      'testing': ['one', 'two', 'three', '123', '231'],
+      'productCustomizedJsonComponents': ["yoke", "collar", "cuff", "hem", "placket", "pocket"]
     }
-    $scope.submitIt = function submitIt(getThis) {
-      console.log(getThis);
-      console.log(typeof getThis);
-      ProductService.getById(getThis).then(function(response) {
-        var tempRes = response.data.data;
-        console.log(tempRes);
-        console.log($scope.tempItem);
-        entityTomodel(tempRes, $scope.productJSON.product.nodes);
-        // entityTomodel(tempRes, $scope.tempItem);
-        // $scope.productJSON.product.nodes = $scope.tempItem;
-      });
+
+    var baseObj = {
+      "name": null,
+      "type": "text",
+      "model": null,
+      "array": false,
+      "dropdown": false,
+      "dropdownKey": null,
+      "map": false,
+      "nodes": {},
+      "leafNode": true
+    }
+
+    var paginationOptions = {
+      pageNumber: 1,
+      pageSize: 25
     };
 
-    $scope.ctrl = {
-      'component': {},
-      'subComponent': {}
+    $scope.gridOptions = {
+      onRegisterApi: function(gridApi) {
+        $scope.gridApi = gridApi;
+        gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
+          paginationOptions.pageNumber = newPage;
+          paginationOptions.pageSize = pageSize;
+          getPage();
+        });
+      },
+      paginationPageSizes: [25, 50, 75],
+      paginationPageSize: 25,
+      useExternalPagination: true,
+      // totalItems: 194,
+      data: 'model.allProducts',
+      enableFiltering: true,
+      columnDefs: [{
+        name: 'placeholder',
+        displayName: '',
+        width: 50,
+        enableSorting: false,
+        enableCellEdit: false,
+        enableFiltering: false,
+        headerCellTemplate: '<span></span>',
+        cellTemplate: '<div class="tableButton"><button id="editBtn" type="button" class="btn-small" ng-click="grid.appScope.edit(row.entity)">Edit</button></div>'
+      }, {
+        field: 'productId'
+      }, {
+        field: 'collection'
+      }, {
+        field: 'styleId'
+      }, {
+        field: 'price'
+      }]
     };
-    $scope.ctrl.component.itemDetails = {};
-    $scope.ctrl.component.items = ["yoke", "collar", "cuff", "hem", "placket", "pocket"];
-    // $scope.ctrl.component.items = ["backoptions", "yoke", "body", "back_yoke", "lifestyle", "collar", "collar_type", "cuff", "hem", "placket", "_pocket_style", "pocket", "sleeve", "sleeve placket", "tuckin", "_fit"];
-    // $scope.ctrl.states = ["backoptions", "yoke", "body", "back_yoke", "lifestyle", "collar", "collar_type", "cuff", "hem", "placket", "_pocket_style", "pocket", "sleeve", "sleeve placket", "tuckin", "_fit"];
 
-    $scope.ctrl.selectedItemChange = function selectedItemChange(item, key) {
-      if (item === undefined) {
-        $scope.ctrl['component'].itemDetails[key].subComponents = {};
-        return false;
-      };
-      console.log('item: ' + item);
-      console.log('key: ' + key);
-      console.log($scope.ctrl['component'].itemDetails[key]);
-      var itemDetailList = $scope.ctrl['component'].itemDetails[key].items;
-      for (var i = 0; i < itemDetailList.length; i++) {
-        if (itemDetailList[i].id === item) {
-          for (var prop in itemDetailList[i].subComponents) {
-            $scope.ctrl['component'].itemDetails[key].subComponentKeys.push(prop);
-          }
-          // $scope.ctrl['component'].itemDetails[key].subComponents = itemDetailList[i].subComponents;
-          break;
-        } else {
-          continue;
-        };
-      };
-      // $scope.ctrl['component'].itemDetails[key].subComponents
+    var getPage = function() {
+      var index = (paginationOptions.pageNumber - 1) * paginationOptions.pageSize;
+      var size = paginationOptions.pageSize;
+      console.log(index);
+      console.log(size);
+      var url = config.backend + 'products/category/' + $scope.category + '?index=' + index + '&size=' + size;
+      $http.get(url)
+        .success(function(response) {
+          console.log('oye!');
+          $scope.model.allProducts = response.data;
+          console.log($scope.model.allProducts);
+        });
     };
 
-    $scope.ctrl.querySearch = function querySearch(query, key, details) {
-      if (details) {
-        var results = query ? $scope.ctrl['component'].itemDetails[key].ids.filter(createFilterFor(query)) : $scope.ctrl['component'].itemDetails[key].ids;
-        return results;
-      };
-      var results = query ? $scope.ctrl[key].items.filter(createFilterFor(query)) : $scope.ctrl[key].items;
+    getPage();
+
+    $scope.querySearch = function querySearch(query, key) {
+      var results = query ? $scope.dropdownVals[key].filter(createFilterFor(query)) : $scope.dropdownVals[key];
       return results;
     };
 
-    // function createFilterFor(query, details) {
     function createFilterFor(query) {
       var lowercaseQuery = angular.lowercase(query);
       return function filterFn(item) {
-        // if (details) {
-        //   return (angular.lowercase(item.id).indexOf(lowercaseQuery) !== -1);
-        // };
         return (angular.lowercase(item).indexOf(lowercaseQuery) !== -1);
       };
     }
 
-    $scope.gridOptions = {
-      data: 'model.allProducts',
-      // rowHeight: 100,
-      enableFiltering: true,
-      columnDefs: []
-    };
-
-    $scope.componentList = ["backoptions", "yoke", "body", "back_yoke", "lifestyle", "collar", "collar_type", "cuff", "hem", "placket", "_pocket_style", "pocket", "sleeve", "sleeve placket", "tuckin", "_fit"];
-
-    $scope.tabCheck = function tabCheck(obj, checkType) {
-      var res = true;
-      for (var key in obj) {
-        if (checkType === 'noLeaves') {
-          if (obj[key].leafNode) {
-            res = false;
-            break;
-          }
-        } else {
-          if (!obj[key].leafNode) {
-            res = false;
-            break;
-          }
-        }
-      }
-      return res;
+    $scope.addSubComponent = function addSubComponent(selectedItem, value) {
+      if (selectedItem === null || selectedItem === undefined) {
+        return false;
+      };
+      value.nodes.subComponents.nodes[selectedItem] = {};
+      $scope.subComponentState[selectedItem] = angular.copy($scope.subComponentsValues);
     }
 
-    function modelToEntity(obj, parent) {
-      for (var key in obj) {
-        if (obj[key].leafNode) {
-          parent[key] = obj[key].model;
-        } else {
-          parent[key] = {};
-          modelToEntity(obj[key].nodes, parent[key]);
-        }
-      }
-    }
-
-    $scope.otherWay = function otherWay() {
-      entityTomodel($scope.generateEntity($scope.productJSON), tempModel);
-    }
-
-    function entityTomodel(obj, parent) {
-      for (var key in obj) {
-
-        // Remove the code below after testing.
-        if (key === 'customizedJson') {
-          continue;
+    $scope.addComponent = function addComponent(value, selectedItem, key) {
+      if (selectedItem === null || selectedItem === undefined) {
+        return false;
+      };
+      // Use service.
+      $http.get(config.backend + 'components/componentType/' + $scope.category + '/' + selectedItem + '?fields=id,subComponents').
+      then(function(response) {
+        var tempObj = angular.copy(baseObj);
+        tempObj['name'] = selectedItem;
+        console.log(value);
+        value.nodes.components.nodes[selectedItem] = tempObj;
+        var componentList = [];
+        response = response.data.data;
+        console.log(response);
+        for (var i = 0; i < response.length; i++) {
+          componentList.push(response[i].id);
         };
-
-        if (obj[key] instanceof Object && !Array.isArray(obj[key])) {
-          entityTomodel(obj[key], parent[key].nodes);
-        } else {
-          parent[key].model = obj[key];
-        }
-      }
+        $scope.dropdownVals[selectedItem] = componentList;
+        $scope.componentDetails[selectedItem] = response;
+      }, function(response) {});
     }
 
-    $scope.generateEntity = function generateEntity(obj) {
-      modelToEntity(obj, productVals);
-      return productVals;
+    $scope.addComponentValue = function addComponentValue(key, selectedItem) {
+      if (selectedItem === null || selectedItem === undefined) {
+        if ($scope.dropdownVals.hasOwnProperty(key + 'SubComponents')) {
+          var subComponents = $scope.productJSON.product.nodes.customizedJson.nodes.subComponents.nodes;
+          for (var i = 0; i < $scope.dropdownVals[key + 'SubComponents'].length; i++) {
+            if (subComponents.hasOwnProperty($scope.dropdownVals[key + 'SubComponents'][i])) {
+              delete subComponents[$scope.dropdownVals[key + 'SubComponents'][i]];
+              delete $scope.subComponentState[$scope.dropdownVals[key + 'SubComponents'][i]];
+            };
+          };
+          delete $scope.dropdownVals[key + 'SubComponents'];
+        };
+      };
+      var selectedItemDetails;
+      var subComponentList = [];
+      for (var i = 0; i < $scope.componentDetails[key].length; i++) {
+        if ($scope.componentDetails[key][i].id === selectedItem) {
+          selectedItemDetails = $scope.componentDetails[key][i];
+          for (var prop in selectedItemDetails.subComponents) {
+            subComponentList.push(prop);
+          }
+          $scope.dropdownVals[key + 'SubComponents'] = subComponentList;
+          break;
+        };
+      };
     }
   });

@@ -1,0 +1,67 @@
+<md-tabs>
+  <md-tab label="components">
+    <div layout layout-align="start center">
+      <div ng-repeat="key in ['component']" ng-include="'auto-complete-template.html'" scope="" onload=""></div>
+      <md-button class="md-fab" ng-click="addNewProp(ctrl.component.selectedItem, 'component')" aria-label="placeholder" md-theme="core">
+        <md-icon md-svg-src="assets/images/ic_add_box_white_24px.svg"></md-icon>
+      </md-button>
+    </div>
+    <div layout="row" layout-wrap>
+      <div ng-repeat="(key, value) in value.nodes.components.nodes">
+        <div ng-include="'auto-complete2-template.html'" scope="" onload=""></div>
+      </div>
+    </div>
+  </md-tab>
+  <md-tab label="subComponents">
+    <div ng-repeat="(key, value) in ctrl['component'].itemDetails">
+      <div layout="row" class="sub-component-container">
+        <div layout="row" layout-align="center center">
+          <md-whiteframe class="sub-component-type md-whiteframe-z1">
+            <span>{{key}}</span>
+          </md-whiteframe>
+        </div>
+        <div>
+          <md-autocomplete class="newProp" md-selected-item="subComponentSelectedItem" md-selected-item-change="subComponentSelect(subComponentSelectedItem, key)" md-items="item in value.subComponentKeys" md-min-length="0" placeholder="Add {{key}} subComponent">
+            <md-item-template>
+              <span md-highlight-flags="^i">{{item}}</span>
+            </md-item-template>
+          </md-autocomplete>
+        </div>
+      </div>
+      <div>
+        <div>
+          <div ng-repeat="(key, value) in ctrl['component'].itemDetails[key].subComponents">
+            <div layout="row" class="sub-component-container">
+              <div layout="row" layout-align="center center">
+                <md-whiteframe class="sub-component-value md-whiteframe-z1">
+                  <span>{{key}}</span>
+                </md-whiteframe>
+              </div>
+              <div ng-repeat="(key, value) in value">
+                <md-checkbox md-no-ink aria-label="Checkbox No Ink" ng-model="value.state" class="md-primary">
+                  {{value.name}}
+                </md-checkbox>
+              </div>
+            </div>
+            <div layout="row" layout-wrap>
+              <div class="inputDiv" ng-repeat="(key, value) in value" ng-if="value.state">
+                <md-input-container>
+                  <label>{{value.name}}</label>
+                  <input type="text" name="{{value.name}}" ng-model="value.val">
+                </md-input-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </md-tab>
+  <md-tab label="productSpecificAttributes">
+    <div class="inputDiv">
+      <md-input-container>
+        <label>Fabric (Placeholder)</label>
+        <input type="text" name="Placeholder">
+      </md-input-container>
+    </div>
+  </md-tab>
+</md-tabs>

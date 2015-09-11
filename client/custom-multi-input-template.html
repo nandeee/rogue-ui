@@ -3,5 +3,4 @@
   <md-button class="md-raised" ng-click="addCustomObj(value)">Add item</md-button>
 </div>
 <div ng-include="'templates/tab-template.html'" scope="" onload="" ng-repeat="(key, value) in value.template"></div>
-<div><pre ng-bind="formToEntity(value.template) | json"></pre></div>
-<span>{{value.model}}</span>
+<div ng-if="JSONView"><pre ng-bind="formToEntity(value.template) | json"></pre></div>

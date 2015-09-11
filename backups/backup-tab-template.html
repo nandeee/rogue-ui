@@ -1,0 +1,43 @@
+<!-- begin: if all leafNodes -->
+<div ng-if="value.firstLevel">
+  <span ng-bind="value.name"></span>
+</div>
+<div ng-if="tabCheck(value.nodes)" layout="row" layout-wrap>
+  <div ng-repeat="(key, value) in value.nodes">
+    <div layout class="inputDiv" ng-if="value.leafNode && key !== 'placeholder' && !value.array" ng-include="'input-template.html'" scope="" onload=""></div>
+  </div>
+</div>
+<div ng-if="tabCheck(value.nodes)">
+  <div ng-repeat="(key, value) in value.nodes" ng-if="key !== 'placeholder' && value.array">
+    <div ng-if="!value.dropdown && value.customType" class="multi-input-container" ng-include="'custom-multi-input-template.html'" scope="" onload=""></div>
+    <div ng-if="!value.dropdown && !value.customType" class="multi-input-container" ng-include="'multi-input-template.html'" scope="" onload=""></div>
+    <div ng-if="value.dropdown" class="multi-input-container" ng-include="'dropdown-multi-input-template.html'" scope="" onload=""></div>
+  </div>
+</div>
+<div ng-if="tabCheck(value.nodes) && value.firstLevel" layout="row" layout-align="end center" class="save-container">
+  <md-button ng-click="doSomething()" class="md-raised">save</md-button>
+</div>
+<!-- end: if all leafNodes -->
+<md-tabs md-dynamic-height ng-if="!tabCheck(value.nodes) && value.name !== 'customizedJson'">
+  <md-tab label="Tab #1" ng-if="!tabCheck(value.nodes, 'noLeaves') && key !== 'placeholder'">
+    <div layout="row" layout-wrap>
+      <div ng-repeat="(key, value) in value.nodes" class="inputDiv" ng-if="key !== 'placeholder' && value.leafNode && !value.array" ng-include="'input-template.html'" scope="" onload=""></div>
+    </div>
+    <div ng-repeat="(key, value) in value.nodes" ng-if="key !== 'placeholder' && tabCheck(value.nodes) && value.array">
+      <div ng-if="!value.dropdown" class="multi-input-container" ng-include="'multi-input-template.html'" scope="" onload=""></div>
+      <div ng-if="value.dropdown" class="multi-input-container" ng-include="'dropdown-multi-input-template.html'" scope="" onload=""></div>
+    </div>
+    <div ng-if="value.firstLevel" layout="row" layout-align="end center" class="save-container">
+      <md-button ng-click="doSomething()" class="md-raised">save</md-button>
+    </div>
+  </md-tab>
+  <md-tab label="{{value.name}}" ng-if="!value.leafNode && key !== 'placeholder'" ng-repeat="(key, value) in value.nodes">
+    <div ng-if="value.map" ng-include="'add-map-entity-template.html'" scope="" onload=""></div>
+    <div ng-include="'templates/tab-template.html'" scope="" onload=""></div>
+    </div>
+    <div ng-if="value.firstLevel" layout="row" layout-align="end center" class="save-container">
+      <md-button ng-click="doSomething()" class="md-raised">save</md-button>
+    </div>
+  </md-tab>
+</md-tabs>
+<div ng-include="'cj-template.html'" scope="" onload="" ng-if="value.name === 'customizedJson'"></div>

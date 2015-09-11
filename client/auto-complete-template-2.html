@@ -1,0 +1,5 @@
+<div class="multi-input" layout>
+  <md-autocomplete class="dropdown-multi-input" md-selected-item-change="addComponentValue(key, value.model)" md-selected-item="value.model" md-search-text="searchText" md-items="item in querySearch(searchText, key)" md-item-text="item" md-min-length="0" placeholder="{{key}}">
+    <span md-highlight-text="searchText">{{item}}</span>
+  </md-autocomplete>
+</div>

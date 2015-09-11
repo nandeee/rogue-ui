@@ -1,58 +1,47 @@
 'use strict';
 
 angular.module('expsApp')
-  .controller('MainCtrl', function($scope, $state, $mdToast, TrimService, $http) {
+  .controller('MainCtrl', function($scope, $http, $state, $mdToast, FabricService, ProductService, TrimService, ComponentService) {
     $scope.state = $state;
-    $scope.entity = {};
-    $scope.jsonView = true;
-
+    $scope.JSONView = false;
+    $scope.fabricJSON = config.fabricFormSchema;
+    $scope.productJSON = config.productFormSchema;
     $scope.trimJSON = angular.copy(config.trimFormSchema);
     $scope.componentJSON = config.componentFormSchema;
-    $scope.Embroidery = config.Embroidery;
+    $scope.subComponentState = {};
 
-    $scope.makeReq = function makeReq () {
-      var tempObj = $scope.formToEntity($scope.trimJSON);
-      var tempArr = [];
-      tempArr.push(tempObj.trim);
-      TrimService.create(tempArr);
-    }
+    $scope.disallowedKeys = ['placeholder', 'createdBy', 'createdTime', 'lastModifiedTime', 'liveDateOnWeb', 'modifiedBy'];
 
-    $scope.testFunction = function testFunction(asdf) {
-      console.log(asdf);
-      // $http.get(config.backend + 'components/COL001?complete=true').
-      $http.get(config.backend + 'trims/buttons/BTN1?complete=true').
-      then(function(response) {
-        var tempObj = response.data.data;
-        console.log(tempObj);
-        // $scope.componentJSON = angular.copy(config.componentFormSchema);
-        // $scope.generateForm(tempObj, $scope.componentJSON.component.nodes);
-        $scope.trimJSON = angular.copy(config.trimFormSchema);
-        $scope.generateForm(tempObj, $scope.trimJSON.trim.nodes);
-        // this callback will be called asynchronously
-        // when the response is available
-      }, function(response) {
-        // called asynchronously if an error occurs
-        // or server returns response with an error status.
-      });
-    }
-
-    $scope.generateForm = function generateForm(obj, parent) {
-      for (var key in obj) {
-        if (obj[key] instanceof Object && !Array.isArray(obj[key])) {
-          if (parent[key].map) {
-            var keys = Object.keys(obj[key]);
-            for (var i = 0; i < keys.length; i++) {
-              var temp = angular.copy(parent[key].nodes['placeholder']);
-              temp['name'] = keys[i];
-              parent[key].nodes[keys[i]] = temp;
-            };
-          };
-          generateForm(obj[key], parent[key].nodes);
-        } else {
-          parent[key].model = obj[key];
-        }
+    $scope.entity = {
+      fabric: {
+        state: false
+      },
+      product: {
+        state: false
+      },
+      trim: {
+        state: false
+      },
+      component: {
+        state: false
       }
-    }
+    };
+
+    $scope.category = 'mens-shirt';
+
+    $scope.categories = [{
+      name: "Men's Shirts",
+      value: 'mens-shirt'
+    }, {
+      name: "Men's Suits",
+      value: 'mens-suits'
+    }, {
+      name: "Men's Jeans",
+      value: 'mens-jeans'
+    }, {
+      name: "Men's Chinos",
+      value: 'mens-chinos'
+    }];
 
     $scope.toastPosition = {
       bottom: false,
@@ -69,31 +58,105 @@ angular.module('expsApp')
         .join(' ');
     };
 
-    $scope.$watch('isUpdate', function(newValue, oldValue) {
-      if (newValue === undefined)
-        return false;
-      if (newValue) {
-        $state.go($scope.state.current.name.split('.')[0] + '.update');
-      } else {
-        $state.go($scope.state.current.name.split('.')[0] + '.create');
-      };
-    });
-
-    $scope.stateChange = function stateChange() {
-      $state.go('product.create');
+    $scope.save = function save() {
+      var tempArr = [];
+      var state = $scope.state.current.name.split('.')[0];
+      switch (state) {
+        case 'fabric':
+          var tempObj = $scope.formToEntity($scope.fabricJSON);
+          tempArr.push(tempObj.fabric);
+          FabricService.create(tempArr);
+          break;
+        case 'product':
+          var tempObj = $scope.formToEntity($scope.productJSON);
+          tempObj.product.customizedJson.subComponents = $scope.getSubComponents();
+          tempArr.push(tempObj.product);
+          ProductService.create(tempArr);
+          break;
+        case 'trim':
+          var tempObj = $scope.formToEntity($scope.trimJSON);
+          tempArr.push(tempObj.trim);
+          TrimService.create(tempArr);
+          break;
+        case 'component':
+          var tempObj = $scope.formToEntity($scope.componentJSON);
+          tempArr.push(tempObj.component);
+          ComponentService.create(tempArr);
+          break;
+        default:
+      }
     }
 
-    $scope.dropdownVals = {
-      'trimColor': {
-        'list': [],
-        'returnList': function() {
-          return ['asdf', 'hello', 'testing', '123', 'foo', 'bar'];
+    // Make this general and test.
+    $scope.edit = function(entity) {
+      var state = $scope.state.current.name.split('.')[0];
+      switch (state) {
+        case 'fabric':
+          var fabricId = entity.fabricId;
+          FabricService.getById(fabricId).then(function(response) {
+            var tempObj = response.data.data;
+            $scope.fabricJSON = angular.copy(config.fabricFormSchema);
+            $scope.generateForm(tempObj, $scope.fabricJSON.fabric.nodes);
+            $state.go('fabric.create');
+          });
+          break;
+        case 'product':
+          var productId = entity.productId;
+          ProductService.getById(productId).then(function(response) {
+            var tempObj = response.data.data;
+            $scope.productJSON = angular.copy(config.productFormSchema);
+            $scope.generateForm(tempObj, $scope.productJSON.product.nodes);
+            $state.go('product.create');
+          });
+          break;
+        case 'trim':
+          break;
+        case 'component':
+          break;
+        default:
+      }
+    };
+
+    $scope.generateForm = function generateForm(obj, parent) {
+      for (var key in obj) {
+        if (key === 'components') {
+          console.log('hmm...');
+        };
+        if ($scope.disallowedKeys.indexOf(key) !== -1) {
+          continue;
+        };
+        if (obj[key] instanceof Object && !Array.isArray(obj[key])) {
+          if (parent[key].map) {
+            var keys = Object.keys(obj[key]);
+            for (var i = 0; i < keys.length; i++) {
+              var temp = angular.copy(parent[key].nodes['placeholder']);
+              temp['name'] = keys[i];
+              parent[key].nodes[keys[i]] = temp;
+            };
+          };
+          generateForm(obj[key], parent[key].nodes);
+        } else {
+          parent[key].model = obj[key];
         }
       }
     }
 
+    // Add logic
+    // Clean form + subComponents. Anything else?
+    $scope.$watch('category', function(newValue, oldValue) {
+      if (newValue === undefined)
+        return false;
+      console.log(newValue);
+    });
+
+    $scope.dropdownVals = {
+      'trimColor': ['asdf', 'hello', 'testing', '123', 'foo', 'bar'],
+      'trimContent': ['en', 'hi', 'ur'],
+    }
+
     $scope.querySearch = function querySearch(query, key) {
-      var results = query ? $scope.dropdownVals[key].returnList().filter(createFilterFor(query)) : $scope.dropdownVals[key].returnList();
+      var results = query ? $scope.dropdownVals[key]
+        .filter(createFilterFor(query)) : $scope.dropdownVals[key];
       return results;
     };
 
@@ -129,16 +192,11 @@ angular.module('expsApp')
       value.nodes[newMapEntityName] = newMapEntity;
     }
 
-    $scope.disallowedKeys = ['placeholder', 'createdBy', 'createdTime', 'lastModifiedTime', 'liveDateOnWeb'];
-
     $scope.generateEntity = function generateEntity(obj, parent) {
       for (var key in obj) {
         if ($scope.disallowedKeys.indexOf(key) !== -1) {
           continue;
         };
-        // if (key === 'placeholder') {
-        //   continue;
-        // };
         if (obj[key].leafNode) {
           parent[key] = obj[key].model;
         } else {
@@ -146,10 +204,6 @@ angular.module('expsApp')
           generateEntity(obj[key].nodes, parent[key]);
         }
       }
-    }
-
-    $scope.entityToForm = function entityToForm(tempObj) {
-
     }
 
     $scope.formToEntity = function formToEntity(obj) {
@@ -161,6 +215,11 @@ angular.module('expsApp')
     $scope.addCustomObj = function addCustomObj(value) {
       var temp = $scope.formToEntity(value.template)[value.type];
       value.model.push(temp);
+    }
+
+    $scope.showButton = function showButton() {
+      var subView = $scope.state.current.name.split('.')[1];
+      return (['create', 'update'].indexOf(subView) !== -1);
     }
 
     $scope.tabCheck = function tabCheck(obj, checkType) {
@@ -181,52 +240,40 @@ angular.module('expsApp')
       return res;
     };
 
-    $scope.showButton = function showButton() {
-      var subView = $scope.state.current.name.split('.')[1];
-      return (['create', 'update'].indexOf(subView) !== -1);
+    $scope.getSubComponents = function getSubComponents() {
+      var processedObj = {};
+      for (var prop in $scope.subComponentState) {
+        processedObj[prop] = {};
+        var remove = true;
+        for (var key in $scope.subComponentState[prop]) {
+          if ($scope.subComponentState[prop][key].state) {
+            remove = false;
+            processedObj[prop][key] = $scope.subComponentState[prop][key].model;
+          };
+        }
+        if (remove) {
+          delete processedObj[prop];
+        };
+      }
+      return processedObj;
     }
 
-    $scope.isSelected = function isSelected(key) {
-      var view = $scope.state.current.name.split('.')[0];
-      return view === key;
+    $scope.setSelectedTab = function setSelectedTab(evt) {
+      var state = $scope.state.current.name.split('.')[0];
+      var target = evt.currentTarget.dataset.name;
+      $scope.entity[state]['selectedTab'] = target;
+      // remove
+      console.log($scope.entity[state]['selectedTab']);
     }
-
-    $scope.entity = {
-      fabric: false,
-      product: false,
-      trim: false,
-      component: false,
-      style: false,
-      rule: false
-    };
-
-    $scope.categories = [{
-      name: "Men's Shirts",
-      value: 'mens-shirt'
-    }, {
-      name: "Men's Suits",
-      value: 'mens-suits'
-    }, {
-      name: "Men's Jeans",
-      value: 'mens-jeans'
-    }, {
-      name: "Men's Chinos",
-      value: 'mens-chinos'
-    }];
-
-    $scope.category = 'mens-chinos';
 
     $scope.toggleMenu = function toggleMenu(evt) {
       var target = evt.currentTarget.dataset.name;
-      console.log(typeof evt.currentTarget
-        .dataset.name);
-      var currentState = $scope.entity[target];
+      var currentState = $scope.entity[target].state;
       for (var key in $scope.entity) {
-        console.log(typeof key);
         if (key === target) {
-          $scope.entity[key] = !$scope.entity[key];
+          $scope.entity[key].state = !$scope.entity[key].state;
         } else {
-          $scope.entity[key] = false;
+          $scope.entity[key].state = false;
         }
       }
     }

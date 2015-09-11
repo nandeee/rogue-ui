@@ -1,2 +1,3 @@
-<div ng-include="'templates/tab-template.html'" scope="" onload="" ng-repeat="(key, value) in productJSON">
+<div ng-include="'templates/first-level-tab-template.html'" scope="" onload="" ng-repeat="(key, value) in productJSON">
 </div>
+<div ng-if="JSONView"><pre ng-bind="getSubComponents() | json"></pre></div>

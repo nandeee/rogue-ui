@@ -1,0 +1,8 @@
+<div class="multi-input" layout>
+  <md-autocomplete class="dropdown-multi-input" md-selected-item="selectedItem" md-search-text="searchText" md-items="item in querySearch(searchText, 'productCustomizedJsonComponents')" md-item-text="item" md-min-length="0" placeholder="Add new component">
+    <span md-highlight-text="searchText">{{item}}</span>
+  </md-autocomplete>
+  <md-button class="md-fab" ng-click="addComponent(value, selectedItem, 'components');searchText = '';selectedItem = undefined;" aria-label="placeholder" md-theme="core">
+    <md-icon md-svg-src="assets/images/ic_add_box_white_24px.svg"></md-icon>
+  </md-button>
+</div>

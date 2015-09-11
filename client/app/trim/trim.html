@@ -1,3 +1,2 @@
-<div ui-view></div>
-<!-- <div ng-if="jsonView"><pre>{{trimJSON | json}}</pre></div> -->
-<div><pre ng-bind="formToEntity(trimJSON) | json"></pre></div>
+<div ui-view flex layout="column"></div>
+<div ng-if="JSONView"><pre ng-bind="formToEntity(trimJSON) | json"></pre></div>

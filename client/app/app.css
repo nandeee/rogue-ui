@@ -1,3 +1,11 @@
+.add-map-input {
+  width: 200px;
+}
+
+.tableButton {
+  text-align: center;
+}
+
 #test {
   width: 200px;
 }
@@ -36,6 +44,7 @@ md-toast.md-custom-toast-theme {
   border: #C5CAE9 1px solid;
 }
 
+.save-container,
 .add-map-entity {
   padding: 0 10px;
   background-color: #E8EAF6;
@@ -55,12 +64,8 @@ md-toast.md-custom-toast-theme {
   background-color: #424242;
 }
 
-.tempPapa {
+.gridContainer {
   padding: 20px;
-}
-
-.tempColored {
-  /*background-color: blue;*/
 }
 
 
@@ -130,17 +135,17 @@ md-tabs-canvas {
   width: 100%;
 }
 
-.categories {
-  font-size: 18px;
-}
-
 .title {
   margin: 0 20px;
 }
 
-.categories md-option {
+md-option {
   font-family: 'Maven Pro', sans-serif;
   text-transform: uppercase;
+}
+
+.categories {
+  font-size: 18px;
 }
 
 .categories span {

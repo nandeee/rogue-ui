@@ -1,4 +1,2 @@
-<!-- {{somethingNew}} -->
-<!-- <input to-array type="number" ng-model="somethingNew"></input> -->
-<!-- <button ng-click="testMapping()">testMapping</button> -->
 <div ui-view flex layout="column"></div>
+<div ng-if="JSONView"><pre ng-bind="formToEntity(productJSON) | json"></pre></div>
